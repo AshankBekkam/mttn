@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:polygon_clipper/polygon_border.dart';
-import 'package:polygon_clipper/polygon_clipper.dart';
+
 
 class Academic extends StatelessWidget {
   @override

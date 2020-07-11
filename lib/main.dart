@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.black,
         
-        primarySwatch: Colors.amber,
-        primaryColor: Color.fromRGBO(250, 215, 0, 1),
+        primarySwatch: Colors.blue,
+        //primaryColor: Color.fromRGBO(250, 215, 0, 1),
       ),
 
       home: Home(),
