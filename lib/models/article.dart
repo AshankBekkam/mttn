@@ -1,6 +1,6 @@
 
 class Article{
-  final String id;
+  final int id;
   final String link;
   final String title;
   final String content;
@@ -10,4 +10,16 @@ class Article{
 
   Article({this.id, this.link, this.title, this.content, this.excerpt,
       this.imageUrl, this.date});
+
+  factory Article.fromJson(Map<String,dynamic> json){
+    return Article(
+      id: json['id'],
+      link: json['link'],
+      title: json['title']['rendered'],
+      content: json['content']['rendered'],
+      //excerpt: json['excerpt']['rendered'],
+      imageUrl: json['jetpack_featured_media_url'],
+      date: json['date']
+    );
+  }
 }

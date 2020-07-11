@@ -4,8 +4,11 @@ class PostContainer extends StatelessWidget {
   /*final onTap;
   final String title, author,image;
 
-  const PostContainer({Key key, this.onTap, this.title, this.author, this.image}) : super(key: key);*/
 
+  const PostContainer({Key key, this.onTap, this.title, this.author, this.image}) : super(key: key);*/
+  final String image;
+  final String title;
+  PostContainer({@required this.image,@required this.title});
   @override
 
   Widget build(BuildContext context) {
@@ -16,10 +19,10 @@ class PostContainer extends StatelessWidget {
           Card( shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9),),
             color: Colors.blue,
             child: Container(height: size.height*.2,
-              child: Center(child: Text("1", style: TextStyle(color: Colors.white, fontSize: 36.0),)),
+              decoration: BoxDecoration(image: DecorationImage(fit: BoxFit.cover,image: NetworkImage(image))),
             ),
           ),
-          //Text('Lorem ipsum this is placeholder text for the title tralalalal',textAlign: TextAlign.center ,style: TextStyle(color: Colors.white),)
+          Text(title,textAlign: TextAlign.center ,style: TextStyle(color: Colors.white),)
         ],
       ),
     );

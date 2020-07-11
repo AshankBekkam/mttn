@@ -5,7 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class Heading extends StatelessWidget {
   String title;
-  Heading({this.title});
+  String image;
+  Heading({this.title,thisimage});
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(backgroundColor: Colors.black,
