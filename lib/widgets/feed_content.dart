@@ -25,7 +25,7 @@ class _FeedContentState extends State<FeedContent> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return  SafeArea(
       child: FutureBuilder(
         future: _postsFuture,
         builder: (context, snapshot) {
@@ -39,7 +39,7 @@ class _FeedContentState extends State<FeedContent> {
             );
           }
           if (snapshot.hasData) {
-            return ListView(
+            return  ListView(
               children: <Widget>[
                 Container(
                   height: MediaQuery.of(context).size.height * .35,
@@ -52,11 +52,12 @@ class _FeedContentState extends State<FeedContent> {
                       onTap: () {
                         print("tapped");
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ArticleScreen(
-                                    article: snapshot.data[i],
-                                  )));},
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ArticleScreen(
+                                      article: snapshot.data[i],
+                                    )));
+                      },
                       image: "${snapshot.data[i].imageUrl}",
                       title: "${snapshot.data[i].title}",
                     ),

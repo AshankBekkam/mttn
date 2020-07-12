@@ -16,16 +16,29 @@ class ArticleScreen extends StatelessWidget {
         body: NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
-          Heading(title: article.title),
+          Heading(
+            title: "test",
+            image: article.imageUrl,
+          ),
         ];
       },
       body: Container(
-        child:SingleChildScrollView(padding: EdgeInsets.all(10),
+        /*decoration: BoxDecoration(color: Colors.black,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(25.0),
+                topRight: Radius.circular(25.0))),*/
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(10),
           child: Html(
-            data: "<div>${article.content}</div>",
-            style:{
-              'div':Style(fontSize: FontSize.small,
-                color: Colors.white)
+            data: "${article.content}",
+            style: {
+              'html': Style(
+                fontSize: FontSize.small,
+                display: Display.INLINE,
+                color: Colors.white,
+              ),
+              'p': Style(padding: EdgeInsets.only(right: 60))
             },
           ),
         ),
