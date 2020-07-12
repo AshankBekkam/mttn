@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mttn/widgets/heading.dart';
 
 class Social extends StatelessWidget {
-  final List<int> numbers = [1, 2, 3, 5, 8, 13, 21, 34, 55];
+  const Social({Key key}) : super(key: key);
+  static const List<int> numbers = [1, 2, 3, 5, 8, 13, 21, 34, 55];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

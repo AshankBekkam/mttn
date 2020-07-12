@@ -1,5 +1,7 @@
 
-class Article{
+import 'package:equatable/equatable.dart';
+
+class Article extends Equatable{
   final int id;
   final String link;
   final String title;
@@ -10,6 +12,12 @@ class Article{
 
   Article({this.id, this.link, this.title, this.content, this.excerpt,
       this.imageUrl, this.date});
+
+  @override
+  List<Object> get props => [id, title, content,excerpt,link,imageUrl,date ];
+
+  @override
+  String toString() => 'Post { id: $id }';
 
   factory Article.fromJson(Map<String,dynamic> json){
     return Article(

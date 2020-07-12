@@ -7,107 +7,153 @@ import 'dart:convert';
 import 'package:mttn/widgets/small_post.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'article_screen.dart';
+import '../bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FeedContent extends StatefulWidget {
   @override
   _FeedContentState createState() => _FeedContentState();
 }
 
-class _FeedContentState extends State<FeedContent> {
-  int pageNo = 1;
-  Future<List<Article>> _postsFuture;
+class _FeedContentState extends State<FeedContent> with AutomaticKeepAliveClientMixin<FeedContent> {
+
+  final _scrollController = ScrollController();
+  final _scrollThreshold = 200.0;
+  PostBloc _postBloc;
+
+  @override
+  bool get wantKeepAlive=>true;
+
   @override
   void initState() {
     super.initState();
-    _postsFuture = _getPosts(pageNo);
+    _scrollController.addListener(_onScroll);
+    _postBloc = BlocProvider.of<PostBloc>(context);
+    //_postsFuture = _getPosts(pageNo);
     print('getting posts');
   }
 
   @override
   Widget build(BuildContext context) {
-    return  SafeArea(
-      child: FutureBuilder(
-        future: _postsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            print(snapshot.error);
+    super.build(context);
+    return BlocBuilder<PostBloc, PostState>(buildWhen:(previous, current) =>previous!=current,
+      builder: (context, state) {
+        if (state is PostFailure) {
+          return Center(child: Text('Error'));
+        }
+        if (state is PostSuccess) {
+          if (state.posts.isEmpty) {
             return Center(
-              child: Text(
-                "ERROR",
-                style: TextStyle(color: Colors.blue),
-              ),
+              child: Text('no posts'),
             );
           }
-          if (snapshot.hasData) {
-            return  ListView(
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height * .35,
-                  margin: const EdgeInsets.symmetric(vertical: 15.0),
-                  child: PageView.builder(
-                    controller: PageController(viewportFraction: .75),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, i) => OverlayedContainer(
-                      onTap: () {
-                        print("tapped");
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ArticleScreen(
-                                      article: snapshot.data[i],
-                                    )));
-                      },
-                      image: "${snapshot.data[i].imageUrl}",
-                      title: "${snapshot.data[i].title}",
-                    ),
+          return ListView(
+            controller: _scrollController,
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * .35,
+                margin: const EdgeInsets.symmetric(vertical: 15.0),
+                child: PageView.builder(
+                  controller: PageController(viewportFraction: .75),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (context, i) => OverlayedContainer(
+                    /*onTap: () {
+                    print("tapped");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ArticleScreen(
+                              article: state.posts[i],
+                            )));
+                  },*/
+                    image: "https://i.imgur.com/IN9iZCc.png",
+                    title: "test_title",
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(9),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Center(
-                        child: Text('All Posts',
-                            style: GoogleFonts.robotoSlab(
-                              fontSize: 30,
-                              color: Colors.white,
-                            )),
-                      ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: 10,
-                        itemBuilder: (context, index) => PostContainer(
-                          image: snapshot.data[index].imageUrl,
-                          title: snapshot.data[index].title,
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            );
-          }
-
-          return Center(
-            child: CircularProgressIndicator(),
+              ),
+              Container(
+                padding: EdgeInsets.all(9),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Center(
+                      child: Text('All Posts',
+                          style: GoogleFonts.robotoSlab(
+                            fontSize: 30,
+                            color: Colors.white,
+                          )),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: state.hasReachedMax
+                          ? state.posts.length
+                          : state.posts.length + 1,
+                      itemBuilder: (context, index) {
+                        return index >= state.posts.length
+                            ? BottomLoader()
+                            : PostContainer(onTap: () {
+                          print("tapped");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ArticleScreen(
+                                    article: state.posts[index],
+                                  )));
+                        },
+                                image: state.posts[index].imageUrl,
+                                title: state.posts[index].title,
+                              );
+                      },
+                    )
+                  ],
+                ),
+              )
+            ],
           );
-        },
+        }
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      _postBloc.add(PostFetched());
+    }
+  }
+}
+
+class BottomLoader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      child: Center(
+        child: SizedBox(
+          width: 33,
+          height: 33,
+          child: CircularProgressIndicator(
+            strokeWidth: 1.5,
+          ),
+        ),
       ),
     );
   }
 }
 
 /*List<Article> parsePosts(response) {
-  final parsed = jsonDecode(response).cast<Map<String, dynamic>>();
-  print(parsed[2]['title']['rendered']);
-  return parsed.map<Article>((json) => Article.fromJson(json)).toList();
-
-}*/
-
-List<Article> parsePosts(response) {
   final parsed = jsonDecode(response).cast<Map<String, dynamic>>();
   return parsed.map<Article>((json) => Article.fromJson(json)).toList();
 }
@@ -117,3 +163,4 @@ Future<List<Article>> _getPosts(int pageNo) async {
   final response = await http.get(baseUrl);
   return compute(parsePosts, response.body);
 }
+*/

@@ -17,7 +17,7 @@ class ArticleScreen extends StatelessWidget {
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
           Heading(
-            title: "test",
+
             image: article.imageUrl,
           ),
         ];

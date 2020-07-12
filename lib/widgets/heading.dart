@@ -9,18 +9,17 @@ class Heading extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
 
-
       backgroundColor: Colors.black,
       expandedHeight: 200.0,
       floating: false,
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
-        background: Image.network(
+        background: image!=null?Image.network(
           image,
           fit: BoxFit.cover,
-        ),
+        ):null,
         centerTitle: true,
-        title:title==null?Container(
+        title:title!=null?Container(
           padding: EdgeInsets.only(top: 30),
           child: Text(title,
               style: GoogleFonts.robotoSlab(

@@ -8,22 +8,22 @@ class PostContainer extends StatelessWidget {
   const PostContainer({Key key, this.onTap, this.title, this.author, this.image}) : super(key: key);*/
   final String image;
   final String title;
-  PostContainer({@required this.image,@required this.title});
+  final onTap;
+  PostContainer({@required this.image,@required this.title,@required this.onTap});
   @override
 
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Container(padding: EdgeInsets.all(30),
-      child: Column(
-        children: <Widget>[
-          Card( shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9),),
-            color: Colors.blue,
-            child: Container(height: size.height*.2,
-              decoration: BoxDecoration(image: DecorationImage(fit: BoxFit.cover,image: NetworkImage(image))),
+    return GestureDetector(onTap: onTap,
+      child: Container(padding: EdgeInsets.all(30),
+        child: Column(
+          children: <Widget>[
+            Container(height: size.height*.2,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(9),image: DecorationImage(fit: BoxFit.cover,image: NetworkImage(image))),
             ),
-          ),
-          Text(title,textAlign: TextAlign.center ,style: TextStyle(color: Colors.white),)
-        ],
+            Text(title,textAlign: TextAlign.center ,style: TextStyle(color: Colors.white),)
+          ],
+        ),
       ),
     );
 

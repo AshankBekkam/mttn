@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 
 class Academic extends StatelessWidget {
+  const Academic({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
